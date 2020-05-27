@@ -1,6 +1,29 @@
 <?php
 
 /**
+*Implements method to fetch API data from URL.
+*@return array[]
+*/
+function villas_common_get_api_data(){
+    $data = [];
+    try {
+      $client = \Drupal::httpClient();
+      $url = "http://solmar.drupalfit.com/api/v1/villa/prices";
+      $response = $client->get($url);
+      if($response->getStatusCode() == 200){
+        $data = $response->getBody()->getContents();
+      }
+    }
+    catch (RequestException $e) {
+      $message = "[GET API DATA]: error While getting Data from Villas API: ".(string)$e->getMessage();
+      \Drupal::logger('villas_common')->error($message);
+      return FALSE;
+    }
+    return $data;
+}
+
+
+/**
 *Implements method to retrieve existing nids of villa Content Type.
 *@return array[]
 */
@@ -40,46 +63,28 @@ function villas_common_update_existing_nodes($data, $hashMap, $nodeStorage){
       foreach ($nodes as $key => $nodeObj) {
          $vidField = $nodeObj->get('field_vid')->getValue();
          $vid = $vidField[0]['value'];
-         $apiObject = $hashMap[$vid];
-         try{
-           $nodeObj->field_discount =  $apiObject['disconut'];
-           $nodeObj->field_price = $apiObject['price'];
-           $nodeObj->field_final_price =  $apiObject['final_price'];
-           $nodeObj->field_date =  $apiObject['date'];
-           $nodeObj->save();
-           unset($hashMap[$vid]);
-         }
-         catch(\Exception $e) {
-          $message = "[UPDATE NODE OBJECTS]: Error While Updating Node objects from  Villas API: ".(string)$e->getMessage();
-          \Drupal::logger('villas_common')->error($message);
-         }
+         if(array_key_exists($vid, $hashMap)){
+           $apiObject = $hashMap[$vid];
+           try{
+             $nodeObj->field_discount =  $apiObject['disconut'];
+             $nodeObj->field_price = $apiObject['price'];
+             $nodeObj->field_final_price =  $apiObject['final_price'];
+             $nodeObj->field_date =  $apiObject['date'];
+             $nodeObj->save();
+             unset($hashMap[$vid]);
+           }
+           catch(\Exception $e) {
+            $message = "[UPDATE NODE OBJECTS]: Error While Updating Node objects from  Villas API: ".(string)$e->getMessage();
+            \Drupal::logger('villas_common')->error($message);
+           }
+        }
       }
     }
     return $hashMap;
 }
 
 
-/**
-*Implements method to fetch API data from URL.
-*@return array[]
-*/
-function villas_common_get_api_data(){
-    $data = [];
-    try {
-      $client = \Drupal::httpClient();
-      $url = "http://solmar.drupalfit.com/api/v1/villa/prices";
-      $response = $client->get($url);
-      if($response->getStatusCode() == 200){
-        $data = $response->getBody()->getContents();
-      }
-    }
-    catch (RequestException $e) {
-      $message = "[GET API DATA]: error While getting Data from Villas API: ".(string)$e->getMessage();
-      \Drupal::logger('villas_common')->error($message);
-      return FALSE;
-    }
-    return $data;
-}
+
 
 
 /**
@@ -136,7 +141,7 @@ function villas_custom_villas_content_process(){
             $apiHashMapData = $residueApiData;
           }
       }
-      foreach ($apiData as $key => $value) {
+        foreach($apiHashMapData as $key => $value){
         $nodeObject = villas_common_get_node_object($value, $nodeStorage);
         try{
           $nodeObject->save();
