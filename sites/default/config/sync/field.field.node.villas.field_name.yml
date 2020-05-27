@@ -1,0 +1,19 @@
+uuid: 278dc4dc-0a9e-4bb6-9646-4d4c345f5c67
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_name
+    - node.type.villas
+id: node.villas.field_name
+field_name: field_name
+entity_type: node
+bundle: villas
+label: Name
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

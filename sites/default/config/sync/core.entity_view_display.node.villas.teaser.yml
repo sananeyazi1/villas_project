@@ -1,0 +1,42 @@
+uuid: 2202d6f5-1ee5-428f-b9cd-2b1d199b8aeb
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.villas.body
+    - field.field.node.villas.field_date
+    - field.field.node.villas.field_discount
+    - field.field.node.villas.field_final_price
+    - field.field.node.villas.field_name
+    - field.field.node.villas.field_price
+    - field.field.node.villas.field_vid
+    - node.type.villas
+  module:
+    - text
+    - user
+id: node.villas.teaser
+targetEntityType: node
+bundle: villas
+mode: teaser
+content:
+  body:
+    label: hidden
+    type: text_summary_or_trimmed
+    weight: 101
+    settings:
+      trim_length: 600
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  field_date: true
+  field_discount: true
+  field_final_price: true
+  field_name: true
+  field_price: true
+  field_vid: true

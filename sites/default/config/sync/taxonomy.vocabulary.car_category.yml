@@ -1,0 +1,8 @@
+uuid: d986b025-be2b-4b9d-a55d-5c678ad85f1d
+langcode: en
+status: true
+dependencies: {  }
+name: 'Car Category'
+vid: car_category
+description: ''
+weight: 0

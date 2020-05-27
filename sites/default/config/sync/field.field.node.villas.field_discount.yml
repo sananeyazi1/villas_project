@@ -1,0 +1,19 @@
+uuid: 755b68ab-efa3-493d-ba2d-2e2f33532d8f
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_discount
+    - node.type.villas
+id: node.villas.field_discount
+field_name: field_discount
+entity_type: node
+bundle: villas
+label: Discount
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

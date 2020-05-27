@@ -1,0 +1,10 @@
+uuid: dfa6fe2a-c18d-49f4-af05-d56b9974d217
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: nAygxNkoV-dysf09n8eaT2MeULBzTisuxlMqdXEJbr8
+decimalSeparator: .
+groupingSeparator: ','
+locale: en_US
+pattern: '¤#,##0.00;(¤#,##0.00)'

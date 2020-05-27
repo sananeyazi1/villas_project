@@ -1,0 +1,23 @@
+uuid: cdffc487-eae4-40f9-b274-f66f0ec877c6
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.body
+    - node.type.villas
+  module:
+    - text
+id: node.villas.body
+field_name: body
+entity_type: node
+bundle: villas
+label: Body
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  display_summary: true
+  required_summary: false
+field_type: text_with_summary

@@ -1,0 +1,6 @@
+name: Villas Common Module
+type: module
+description: 'A custom module that handle Villas Table Operations.'
+pacakge: Custom
+core: 8.x
+

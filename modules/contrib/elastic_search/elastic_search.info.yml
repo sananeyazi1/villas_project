@@ -1,0 +1,11 @@
+name: Elastic Search
+type: module
+description: Elastic search implementation for Drupal 8
+# core: 8.x
+package: Search
+
+# Information added by Drupal.org packaging script on 2018-08-27
+version: '8.x-1.2-beta4'
+core: '8.x'
+project: 'elastic_search'
+datestamp: 1535353684

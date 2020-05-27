@@ -1,0 +1,23 @@
+uuid: cf3119f3-0580-4784-97c4-aa6f75a20031
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.body
+    - node.type.student
+  module:
+    - text
+id: node.student.body
+field_name: body
+entity_type: node
+bundle: student
+label: Body
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  display_summary: true
+  required_summary: false
+field_type: text_with_summary

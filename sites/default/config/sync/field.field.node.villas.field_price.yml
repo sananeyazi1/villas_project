@@ -1,0 +1,19 @@
+uuid: 415c937a-2f2c-4e14-b365-51eee9d730f6
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_price
+    - node.type.villas
+id: node.villas.field_price
+field_name: field_price
+entity_type: node
+bundle: villas
+label: Price
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

@@ -1,0 +1,23 @@
+uuid: f63ed610-cab4-42b5-bf63-9c0010357751
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_vid
+    - node.type.villas
+id: node.villas.field_vid
+field_name: field_vid
+entity_type: node
+bundle: villas
+label: Vid
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

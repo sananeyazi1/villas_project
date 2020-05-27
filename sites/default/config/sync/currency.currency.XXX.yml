@@ -1,0 +1,22 @@
+uuid: c53b1b08-1659-472f-94c7-5ca6e625793c
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: Z1YlONWzZZRT4LTq7RYN4hf3MEcT160wbomEsxLoPZ8
+alternativeSigns: {  }
+currencyCode: XXX
+currencyNumber: '999'
+label: 'No currency'
+roundingStep: null
+sign: ¤
+subunits: 0
+usages:
+  -
+    start: ''
+    end: ''
+    countryCode: AQ
+  -
+    start: ''
+    end: ''
+    countryCode: ZZ

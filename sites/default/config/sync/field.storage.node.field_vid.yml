@@ -1,0 +1,20 @@
+uuid: 89165920-ffa9-4bfc-894b-dd8ea6c4e93b
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: node.field_vid
+field_name: field_vid
+entity_type: node
+type: integer
+settings:
+  unsigned: false
+  size: normal
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

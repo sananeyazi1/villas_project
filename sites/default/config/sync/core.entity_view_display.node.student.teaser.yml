@@ -1,0 +1,38 @@
+uuid: 76b908c6-6ac4-4f26-849f-22e1749b5e74
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.student.body
+    - field.field.node.student.field_class
+    - field.field.node.student.field_roll_number
+    - field.field.node.student.field_school
+    - field.field.node.student.field_university
+    - node.type.student
+  module:
+    - text
+    - user
+id: node.student.teaser
+targetEntityType: node
+bundle: student
+mode: teaser
+content:
+  body:
+    label: hidden
+    type: text_summary_or_trimmed
+    weight: 101
+    settings:
+      trim_length: 600
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  field_class: true
+  field_roll_number: true
+  field_school: true
+  field_university: true

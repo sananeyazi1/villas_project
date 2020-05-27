@@ -1,0 +1,161 @@
+<?php
+
+/**
+*Implements method to retrieve existing nids of villa Content Type.
+*@return array[]
+*/
+function villas_common_get_existing_nodes() {
+    $query = \Drupal::entityQuery('node');
+    $query->condition('type', 'villas');
+    $query->condition('status', 1);
+    $result = $query->execute();
+    if(count($result)) {
+         return $result;
+    } 
+    return [];
+}
+
+/**
+*Implements method to transform API data to Key Value Hashmap.
+*@parameter array $apidata, array hashmap
+*@return array[]
+*/
+function villas_common_process_api_data_to_hmap($data, $hashMap){
+    foreach ($data as $key => $value) {
+       $hashMap[$value['vid']] = $value;
+    }
+    return $hashMap;
+}
+
+/**
+*Implements method to update existing nodes using API data.
+*@parameter array $apidata, array hashmap, interface nodestorage
+*@return array[]
+*/
+function villas_common_update_existing_nodes($data, $hashMap, $nodeStorage){
+    $nids = array_values($data);
+    // Loading Nodes in chunks to prevent memory overhaul
+    foreach (array_chunk($nids, 50) as $chunk) {
+      $nodes = $nodeStorage->loadMultiple($chunk);
+      foreach ($nodes as $key => $nodeObj) {
+         $vidField = $nodeObj->get('field_vid')->getValue();
+         $vid = $vidField[0]['value'];
+         $apiObject = $hashMap[$vid];
+         try{
+           $nodeObj->field_discount =  $apiObject['disconut'];
+           $nodeObj->field_price = $apiObject['price'];
+           $nodeObj->field_final_price =  $apiObject['final_price'];
+           $nodeObj->field_date =  $apiObject['date'];
+           $nodeObj->save();
+           unset($hashMap[$vid]);
+         }
+         catch(\Exception $e) {
+          $message = "[UPDATE NODE OBJECTS]: Error While Updating Node objects from  Villas API: ".(string)$e->getMessage();
+          \Drupal::logger('villas_common')->error($message);
+         }
+      }
+    }
+    return $hashMap;
+}
+
+
+/**
+*Implements method to fetch API data from URL.
+*@return array[]
+*/
+function villas_common_get_api_data(){
+    $data = [];
+    try {
+      $client = \Drupal::httpClient();
+      $url = "http://solmar.drupalfit.com/api/v1/villa/prices";
+      $response = $client->get($url);
+      if($response->getStatusCode() == 200){
+        $data = $response->getBody()->getContents();
+      }
+    }
+    catch (RequestException $e) {
+      $message = "[GET API DATA]: error While getting Data from Villas API: ".(string)$e->getMessage();
+      \Drupal::logger('villas_common')->error($message);
+      return FALSE;
+    }
+    return $data;
+}
+
+
+/**
+*Implements method to get node creation data.
+*@parameter array $apidata
+*@return array[]
+*/
+function villas_common_get_node_data_array($data){
+    $nodeData = [
+      'title'  => $data['name'],
+      'field_discount'  => $data['disconut'],
+      'field_price'  => $data['price'],
+      'field_final_price'  => $data['final_price'],
+      'field_date' => $data['date'],
+    ];
+    return $nodeData;
+}
+
+
+/**
+*Implements method to get new node Object.
+*@parameter array $apidata, interface nodestorage
+*@return Object
+*/
+function villas_common_get_node_object($data, $nodeStorage){
+    
+    $bundleArray = [
+      'type'   => 'villas',
+      'bundle' => 'node',
+      'field_vid'  => $data['vid'],
+    ];
+    $objectArray = villas_common_get_node_data_array($data);
+    $newNodeObject = $nodeStorage->create($bundleArray+$objectArray);
+    return $newNodeObject;
+}
+
+/**
+*Implements Villa Content Type Data Pricess Job
+*/
+function villas_custom_villas_content_process(){
+    $apiData = villas_common_get_api_data();
+    if(!empty($apiData)){
+      $apiData = json_decode($apiData, true);
+      $apiHashMap = [];
+      // Creating API Data Hashmap to reduce lookup time and avoid reiterations
+      $apiHashMapData = villas_common_process_api_data_to_hmap($apiData, $apiHashMap);
+      $existingNodes = villas_common_get_existing_nodes();
+      $nodeStorage = \Drupal::service('entity_type.manager')->getStorage('node');
+      if(!empty($existingNodes)){
+          $residueApiData = villas_common_update_existing_nodes($existingNodes, $apiHashMapData, $nodeStorage);
+          // If API hashmap Still have Data after updating all existing nodes
+          // then create New Entries with the data.
+          if(!empty($residueApiData)){
+            $apiHashMapData = $residueApiData;
+          }
+      }
+      foreach ($apiData as $key => $value) {
+        $nodeObject = villas_common_get_node_object($value, $nodeStorage);
+        try{
+          $nodeObject->save();
+        }
+        catch (\Exception $e) {
+          $message = "[CREATE NODE OBJECTS]: Error While Creating Node objects from  Villas API: ".(string)$e->getMessage();
+          \Drupal::logger('villas_common')->error($message);
+        }
+      }
+    }
+}
+
+
+/**
+*Implements hook_cron to schedule jobs.
+*/
+function villas_common_cron(){
+    
+    villas_custom_villas_content_process();
+    \Drupal::logger('villas_common')->info('Cron Completed Successfully');
+}
+
